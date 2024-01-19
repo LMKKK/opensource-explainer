@@ -68,11 +68,13 @@ export class KoaDriver extends BaseDriver {
 
   /**
    * Registers action in the driver.
+   * 把所有的Action注册到 this driver上
    */
   registerAction(actionMetadata: ActionMetadata, executeCallback: (options: Action) => any): void {
     // middlewares required for this action
     const defaultMiddlewares: any[] = [];
 
+    // 此action是否需要鉴权
     if (actionMetadata.isAuthorizedUsed) {
       defaultMiddlewares.push((context: any, next: Function) => {
         if (!this.authorizationChecker) throw new AuthorizationCheckerNotDefinedError();
@@ -109,6 +111,7 @@ export class KoaDriver extends BaseDriver {
       });
     }
 
+    // 此action是否是 文件上传类型
     if (actionMetadata.isFileUsed || actionMetadata.isFilesUsed) {
       const multer = this.loadMulter();
       actionMetadata.params
@@ -153,6 +156,7 @@ export class KoaDriver extends BaseDriver {
     };
 
     // finally register action in koa
+    // 最终的路由规则
     this.router[actionMetadata.type.toLowerCase()](
       ...[route, routeGuard, ...beforeMiddlewares, ...defaultMiddlewares, routeHandler, ...afterMiddlewares]
     );
@@ -160,6 +164,7 @@ export class KoaDriver extends BaseDriver {
 
   /**
    * Registers all routes in the framework.
+   * 最后的操作，将路由注册到真正的koa服务器上
    */
   registerRoutes() {
     this.koa.use(this.router.routes());
@@ -168,6 +173,7 @@ export class KoaDriver extends BaseDriver {
 
   /**
    * Gets param from the request.
+   * 根据routing-controllers对param类型的划分来获取参数值
    */
   getParamFromRequest(actionOptions: Action, param: ParamMetadata): any {
     const context = actionOptions.context;
@@ -357,6 +363,7 @@ export class KoaDriver extends BaseDriver {
 
   /**
    * Dynamically loads koa module.
+   * koa模块懒加载，并挂载koa服务器实例到this driver
    */
   protected loadKoa() {
     if (require) {
@@ -374,6 +381,7 @@ export class KoaDriver extends BaseDriver {
 
   /**
    * Dynamically loads @koa/router module.
+   * koa路由模块懒加载，并挂载router到this driver
    */
   private loadRouter() {
     if (require) {
@@ -393,6 +401,8 @@ export class KoaDriver extends BaseDriver {
 
   /**
    * Dynamically loads @koa/multer module.
+   * koa/multer懒加载, 只有当这次请求是一个文件上传的类型时，此模块才会被加载
+   * koa/multer 用来处理表单类型文件的中间件
    */
   private loadMulter() {
     try {

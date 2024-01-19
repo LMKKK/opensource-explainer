@@ -11,6 +11,8 @@ import { getMetadataArgsStorage } from '../index';
 
 /**
  * Builds metadata from the given metadata arguments.
+ * 从metadataArg中构建真正用的metadata
+ * metadataArg的目的就是构建metadata
  */
 export class MetadataBuilder {
   constructor(private options: RoutingControllersOptions) {}

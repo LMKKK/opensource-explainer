@@ -92,13 +92,16 @@ export class ActionParameterHandler<T extends BaseDriver> {
 
   /**
    * Normalizes parameter value.
+   * 初始化参数
    */
   protected async normalizeParamValue(value: any, param: ParamMetadata): Promise<any> {
     if (value === null || value === undefined) return value;
-
+    // 是否是 正常的参数类型
     const isNormalizationNeeded =
       typeof value === 'object' && ['queries', 'headers', 'params', 'cookies'].includes(param.type);
+    // 参数是否是基本类型
     const isTargetPrimitive = ['number', 'string', 'boolean'].includes(param.targetName);
+    //  参数是否需要转换
     const isTransformationNeeded = (param.parse || param.isTargetObject) && param.type !== 'param';
 
     // if param value is an object and param type match, normalize its string properties
@@ -107,6 +110,9 @@ export class ActionParameterHandler<T extends BaseDriver> {
         Object.keys(value).map(async key => {
           const keyValue = value[key];
           if (typeof keyValue === 'string') {
+            // 借助reflect-metadata 获取参数metadata
+            // tsconfig.json emitDecoratorMetadata 选项开启后，TS会自动为装饰器的target生成metadata
+            // TS生成的metadata有三个: design:type、design:paramtype、design:returntype
             const ParamType: Function | undefined = (Reflect as any).getMetadata(
               'design:type',
               param.targetType.prototype,

@@ -2,6 +2,7 @@ import * as path from 'path';
 
 /**
  * Loads all exported classes from the given directory.
+ * 从路径加载Controller类
  */
 export function importClassesFromDirectories(directories: string[], formats = ['.js', '.ts', '.tsx']): Function[] {
   const loadFileClasses = function (exported: any, allLoaded: Function[]) {

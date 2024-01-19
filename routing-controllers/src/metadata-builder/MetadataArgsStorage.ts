@@ -17,6 +17,7 @@ export class MetadataArgsStorage {
 
   /**
    * Registered controller metadata args.
+   * 所有已注册的Controller, 即使用@Controller()标注的类的metadata 参数信息
    */
   controllers: ControllerMetadataArgs[] = [];
 
@@ -27,6 +28,7 @@ export class MetadataArgsStorage {
 
   /**
    * Registered interceptor metadata args.
+   * 已注册的拦截器的信息
    */
   interceptors: InterceptorMetadataArgs[] = [];
 
@@ -42,11 +44,13 @@ export class MetadataArgsStorage {
 
   /**
    * Registered action metadata args.
+   * 所有的Action 的参数元信息, 用Post、Get、Put...标注的方法就是一个Action
    */
   actions: ActionMetadataArgs[] = [];
 
   /**
    * Registered param metadata args.
+   * 所有已注册的Action 的参数信息，
    */
   params: ParamMetadataArgs[] = [];
 
@@ -77,6 +81,7 @@ export class MetadataArgsStorage {
 
   /**
    * Filters registered controllers by a given classes.
+   * 从全局Storage中筛选指定Controller的metadataArg
    */
   filterControllerMetadatasForClasses(classes: Function[]): ControllerMetadataArgs[] {
     return this.controllers.filter(ctrl => {
@@ -86,6 +91,7 @@ export class MetadataArgsStorage {
 
   /**
    * Filters registered actions by a given classes.
+   * 筛选指定Controller中的Action的metadata arg
    */
   filterActionsWithTarget(target: Function): ActionMetadataArgs[] {
     return this.actions.filter(action => action.target === target);
@@ -111,6 +117,7 @@ export class MetadataArgsStorage {
 
   /**
    * Filters parameters by a given classes.
+   * 筛选指定Controller中特定Action上的Param meatadata arg
    */
   filterParamsWithTargetAndMethod(target: Function, methodName: string): ParamMetadataArgs[] {
     return this.params.filter(param => {

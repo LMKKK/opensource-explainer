@@ -15,41 +15,49 @@ export class ParamMetadata {
 
   /**
    * Parameter's action.
+   * 该参数所在Action的完整的metadata引用
    */
   actionMetadata: ActionMetadata;
 
   /**
    * Object on which's method's parameter this parameter is attached.
+   * 所在的类，即构造函数
    */
   object: any;
 
   /**
    * Method on which's parameter is attached.
+   * 参数所在方法的名称
    */
   method: string;
 
   /**
    * Index (# number) of the parameter in the method signature.
+   * 参数的索引值，从0开始
    */
   index: number;
 
   /**
    * Parameter type.
+   * routing-controllers中对参数规定的类型
    */
   type: ParamType;
 
   /**
    * Parameter name.
+   * 参数名
    */
   name: string;
 
   /**
    * Parameter target type.
+   * 参数的类型
    */
   targetType?: any;
 
   /**
    * Parameter target type's name in lowercase.
+   * 参数名(转换为小写)
    */
   targetName: string = '';
 
@@ -70,6 +78,7 @@ export class ParamMetadata {
 
   /**
    * Indicates if this parameter is required or not
+   * 标记此参数是否是 必选项
    */
   required: boolean;
 

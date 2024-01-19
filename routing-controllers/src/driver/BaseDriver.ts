@@ -13,6 +13,7 @@ import { RoutingControllersOptions } from '../RoutingControllersOptions';
 /**
  * Base driver functionality for all other drivers.
  * Abstract layer to organize controllers integration with different http server implementations.
+ * 基础服务器驱动，规范Koa和Express的服务器行为
  */
 export abstract class BaseDriver {
   // -------------------------------------------------------------------------
@@ -21,6 +22,7 @@ export abstract class BaseDriver {
 
   /**
    * Reference to the underlying framework app object.
+   * 挂载Koa或Express的真实服务器实例
    */
   app: any;
 
@@ -58,17 +60,20 @@ export abstract class BaseDriver {
 
   /**
    * Indicates if routing-controllers should operate in development mode.
+   * 服务器工作模式： 开发模式，默认开启
    */
   developmentMode: boolean;
 
   /**
    * Global application prefix.
+   * 服务器统一访问前缀
    */
   routePrefix: string = '';
 
   /**
    * Indicates if cors are enabled.
    * This requires installation of additional module (cors for express and @koa/cors for koa).
+   * 跨域设置
    */
   cors?: boolean | Object;
 
@@ -158,6 +163,12 @@ export abstract class BaseDriver {
     return error;
   }
 
+  /**
+   * 工具方法，合并两个对象
+   * @param obj1
+   * @param obj2
+   * @protected
+   */
   protected merge(obj1: any, obj2: any): any {
     const result: any = {};
     for (const i in obj1) {
