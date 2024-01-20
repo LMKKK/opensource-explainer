@@ -75,12 +75,14 @@ export class RoutingControllers<T extends BaseDriver> {
     // 构建Controller 的 metadata，完成后 旧形成了 controller - action -param 之间的关联
     const controllers = this.metadataBuilder.buildControllerMetadata(classes);
     controllers.forEach(controller => {
+      // 为这个controller 的所有action注册全局拦截器、当前controller的拦截器、此action的拦截器
       controller.actions.forEach(actionMetadata => {
         const interceptorFns = this.prepareInterceptors([
           ...this.interceptors,
           ...actionMetadata.controllerMetadata.interceptors,
           ...actionMetadata.interceptors,
         ]);
+        // 注册action到driver
         this.driver.registerAction(actionMetadata, (action: Action) => {
           return this.executeAction(actionMetadata, action, interceptorFns);
         });

@@ -39,6 +39,7 @@ export class KoaDriver extends BaseDriver {
 
   /**
    * Initializes the things driver needs before routes and middleware registration.
+   * 初始化Koa服务器，注册必须的bodyparser、cors中间件
    */
   initialize() {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -139,6 +140,8 @@ export class KoaDriver extends BaseDriver {
       route = route.substring(0, route.length - 1);
     }
 
+    // action的处理逻辑
+    // 包装成一个koa中间件的样子，
     const routeHandler = (context: any, next: () => Promise<any>) => {
       const options: Action = { request: context.request, response: context.response, context, next };
       return executeCallback(options);
