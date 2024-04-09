@@ -11,6 +11,8 @@ import { getMetadataArgsStorage } from '../index';
 
 /**
  * Builds metadata from the given metadata arguments.
+ * 从metadataArg中构建真正用的metadata
+ * metadataArg的目的就是构建metadata
  */
 export class MetadataBuilder {
   constructor(private options: RoutingControllersOptions) {}
@@ -80,6 +82,7 @@ export class MetadataBuilder {
     return controllers.map(controllerArgs => {
       const controller = new ControllerMetadata(controllerArgs);
       controller.build(this.createControllerResponseHandlers(controller));
+      // 构建此Controller关联的Action
       controller.actions = this.createActions(controller);
       controller.uses = this.createControllerUses(controller);
       controller.interceptors = this.createControllerInterceptorUses(controller);
@@ -100,6 +103,7 @@ export class MetadataBuilder {
         .forEach(actionArgs => {
           const action = new ActionMetadata(controller, { ...actionArgs, target: controller.target }, this.options);
           action.options = { ...controller.options, ...actionArgs.options };
+          // 构建此action关联的param
           action.params = this.createParams(action);
           action.uses = this.createActionUses(action);
           action.interceptors = this.createActionInterceptorUses(action);

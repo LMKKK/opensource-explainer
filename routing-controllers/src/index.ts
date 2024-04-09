@@ -99,8 +99,8 @@ export * from './driver/koa/KoaDriver';
 // -------------------------------------------------------------------------
 
 /**
- * Gets metadata args storage.
- * Metadata args storage follows the best practices and stores metadata in a global variable.
+ * 获取全局缓存对象
+ * 在全局挂载Storage实例, 单例模式,global === globalThis
  */
 export function getMetadataArgsStorage(): MetadataArgsStorage {
   if (!(global as any).routingControllersMetadataArgsStorage)
@@ -135,6 +135,7 @@ export function useKoaServer<T>(koaApp: T, options?: RoutingControllersOptions):
 
 /**
  * Registers all loaded actions in your koa application.
+ *
  */
 export function createKoaServer(options?: RoutingControllersOptions): any {
   const driver = new KoaDriver();
@@ -143,6 +144,8 @@ export function createKoaServer(options?: RoutingControllersOptions): any {
 
 /**
  * Registers all loaded actions in your application using selected driver.
+ * 为服务器做配置，
+ * 返回一个Koa 服务器实例
  */
 export function createServer<T extends BaseDriver>(driver: T, options?: RoutingControllersOptions): any {
   createExecutor(driver, options);
@@ -151,12 +154,20 @@ export function createServer<T extends BaseDriver>(driver: T, options?: RoutingC
 
 /**
  * Registers all loaded actions in your express application.
+ * 注册所有的action到koa服务器上
  */
 export function createExecutor<T extends BaseDriver>(driver: T, options: RoutingControllersOptions = {}): void {
   // import all controllers and middlewares and error handlers (new way)
   let controllerClasses: Function[];
+  // 1. 在配置项中注册的Controller
   if (options && options.controllers && options.controllers.length) {
+    // 从配置项中注册Controller的方式有两种：
+    // 1. 直接注册一个Controller的类
+    // 2. 直接注册一个路径， 会加载此路径下所有的@Controller标注的类
+
+    // 直接注册的Controller
     controllerClasses = (options.controllers as any[]).filter(controller => controller instanceof Function);
+    // 路径的方式注册的Controller
     const controllerDirs = (options.controllers as any[]).filter(controller => typeof controller === 'string');
     controllerClasses.push(...importClassesFromDirectories(controllerDirs));
   }
@@ -166,6 +177,7 @@ export function createExecutor<T extends BaseDriver>(driver: T, options: Routing
     const middlewareDirs = (options.middlewares as any[]).filter(controller => typeof controller === 'string');
     middlewareClasses.push(...importClassesFromDirectories(middlewareDirs));
   }
+  // 加载注册的拦截器 interceptor
   let interceptorClasses: Function[];
   if (options && options.interceptors && options.interceptors.length) {
     interceptorClasses = (options.interceptors as any[]).filter(controller => controller instanceof Function);
@@ -173,9 +185,11 @@ export function createExecutor<T extends BaseDriver>(driver: T, options: Routing
     interceptorClasses.push(...importClassesFromDirectories(interceptorDirs));
   }
 
+  // 如果没有给出配置项，则默认此服务器是开发模式
   if (options && options.development !== undefined) {
     driver.developmentMode = options.development;
   } else {
+    // 如果开发环境不是 production ，则认为是 development模式
     driver.developmentMode = process.env.NODE_ENV !== 'production';
   }
 
@@ -212,6 +226,7 @@ export function createExecutor<T extends BaseDriver>(driver: T, options: Routing
   driver.cors = options.cors;
 
   // next create a controller executor
+  // 核心，routing-controllers实例，管理所有的Controller以及action、param
   new RoutingControllers(driver, options)
     .initialize()
     .registerInterceptors(interceptorClasses)

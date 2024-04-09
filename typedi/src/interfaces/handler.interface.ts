@@ -8,7 +8,7 @@ import { Constructable } from '../types/constructable.type';
 export interface Handler<T = unknown> {
   /**
    * Service object used to apply handler to.
-   * 目标的构造函数
+   * 目标的构造函数,即类本身
    */
   object: Constructable<T>; 
 
