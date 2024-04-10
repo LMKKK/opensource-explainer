@@ -57,6 +57,7 @@
 		"get-stream": "^8.0.1",
 		"http2-wrapper": "^2.2.1",
 		"lowercase-keys": "^3.0.0",
+		"nodemon": "^3.1.0",
 		"p-cancelable": "^4.0.1",
 		"responselike": "^3.0.0"
 	},

@@ -33,6 +33,7 @@ const aliases: readonly HTTPAlias[] = [
 	'delete',
 ];
 
+// 创建got
 const create = (defaults: InstanceDefaults): Got => {
 	defaults = {
 		options: new Options(undefined, undefined, defaults.options),
@@ -102,6 +103,7 @@ const create = (defaults: InstanceDefaults): Got => {
 		return iterateHandlers(request.options);
 	}) as Got;
 
+	// extend() 方法返回一个默认配置的client
 	got.extend = (...instancesOrOptions) => {
 		const options = new Options(undefined, undefined, defaults.options);
 		const handlers = [...defaults.handlers];
@@ -232,6 +234,7 @@ const create = (defaults: InstanceDefaults): Got => {
 
 	// Shortcuts
 	for (const method of aliases) {
+		// 别名，got.post、got.get、got.delete....
 		got[method] = ((url: string | URL, options?: Options): GotReturn => got(url, {...options, method})) as GotRequestFunction;
 
 		got.stream[method] = ((url: string | URL, options?: StreamOptions) => got(url, {...options, method, isStream: true})) as GotStream;

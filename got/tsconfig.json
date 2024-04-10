@@ -13,5 +13,11 @@
 		"source",
 		"test",
 		"benchmark"
-	]
+	],
+	"ts-node": {
+		"transpileOnly": false,
+    "files": true,
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+	},
 }
